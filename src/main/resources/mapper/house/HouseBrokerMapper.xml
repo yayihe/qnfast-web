@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qn.web.house.mapper.HouseBrokerMapper">
+
+
+    <select id="queryList" resultType="com.qn.web.entity.Broker">
+        select a.realname as realname,a.icon_url as iconUrl,s.`name` as shop ,a.mobile as mobile,a.`status` as `status` ,addr.`name` as address
+        from ims_amouse_wxapp_agent as a
+        LEFT JOIN ims_amouse_wxapp_shop as s on a.shop_id = s.id
+        LEFT JOIN ims_amouse_wxapp_address as addr on a.address_id = addr.id
+        <where>
+            1=1
+            <if test="mobileOrName != null and mobileOrName != ''">
+                and a.mobile like  '%${mobileOrName}%' or a.realname like concat('%',#{mobileOrName},'%')
+            </if>
+            <!--<if test="name != null and name != ''">-->
+                <!--or a.realname like concat('%',#{name},'%')-->
+            <!--</if>-->
+        </where>
+    </select>
+
+    <update id="batchdelete" parameterType="String">
+        update ims_amouse_wxapp_agent set status = 2 where id in (${ids})
+    </update>
+
+    <insert id="save" parameterType="com.qn.web.entity.Broker">
+        insert into ims_amouse_wxapp_agent (
+        `realname`,
+        `mobile`,
+        `shop_id`,
+        `icon_url`,
+        `desc`,
+        `address_id`
+        )values (
+        #{broker.realname},#{broker.mobile},
+        #{broker.shopId},#{broker.iconUrl},
+        #{broker.desc},#{broker.addressId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.qn.web.entity.Broker">
+        update ims_amouse_wxapp_agent set
+            shop_id = #{broker.shopId},
+            address_id = #{broker.addressId}
+            where id = #{broker.id}
+    </update>
+</mapper>

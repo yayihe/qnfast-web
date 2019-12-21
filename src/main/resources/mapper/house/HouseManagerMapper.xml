@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qn.web.house.mapper.HouseManagerMapper">
+
+    <!--查询列表-->
+<select id="queryList" resultType="com.qn.web.entity.House" parameterType="com.qn.web.house.vo.input.HouseManagerIn">
+
+    select h.id,h.`status`,h.house_type as houseType,h.createtime,k.`name` as area,a.`realname` as broker,a.mobile as brokerMobile,g.`name` as fit,j.`name` as apartment
+    from ims_amouse_wxapp_house h
+    LEFT JOIN ims_amouse_wxapp_agent a on h.agent_id = a.id
+    LEFT JOIN ims_amouse_wxapp_kinds k on h.area_id = k.id and k.type =1
+    LEFT JOIN ims_amouse_wxapp_kinds g on h.fit_id = g.id and g.type =2
+    LEFT JOIN ims_amouse_wxapp_kinds j on h.type_id = j.id and j.type = 4
+    <where>
+        1=1
+        <if test="paramIn.houseType != null and paramIn.houseType != ''">
+            and house_type = #{paramIn.houseType}
+        </if>
+        <!--<if test="keyword != null and keyword.trim != ''">-->
+        <!--</if>-->
+
+
+    </where>
+    order by h.createtime desc
+</select>
+
+
+
+
+</mapper>
